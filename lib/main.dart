@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Лаб 1 Інтерактивний лічильник',
+      title: 'Лаб 2 Інтерактивний лічильник',
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
@@ -66,7 +66,7 @@ class _CounterPageState extends State<CounterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Лаб 1 Інтерактивний лічильник')),
+      appBar: AppBar(title: const Text('Інтерактивний лічильник')),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

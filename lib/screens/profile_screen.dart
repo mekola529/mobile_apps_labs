@@ -103,7 +103,7 @@ class ProfileScreen extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: Colors.grey,
               ),
             ),
             const SizedBox(height: 4),

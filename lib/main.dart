@@ -1,105 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/login_screen.dart';
+import 'package:flutter_application_1/screens/home_screen.dart';
+import 'package:flutter_application_1/screens/profile_screen.dart';
+import 'package:flutter_application_1/screens/register_screen.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Flutter Application 1',
       debugShowCheckedModeBanner: false,
-      title: 'Лаб 1 Інтерактивний лічильник',
       theme: ThemeData(
+        useMaterial3: true,
         brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-          brightness: Brightness.dark,
+        primaryColor: Colors.indigo,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1E1E1E),
+          elevation: 0,
+        ),
+        textTheme: const TextTheme(
+          headlineLarge: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          headlineSmall: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 14,
+            color: Colors.white70,
+          ),
         ),
       ),
-      home: const CounterPage(),
-    );
-  }
-}
-
-class CounterPage extends StatefulWidget {
-  const CounterPage({super.key});
-
-  @override
-  State<CounterPage> createState() => _CounterPageState();
-}
-
-class _CounterPageState extends State<CounterPage> {
-  int counter = 0;
-  final controller = TextEditingController();
-  String message = '';
-
-  void updateCounter() {
-    final input = controller.text.trim().toLowerCase();
-    final value = int.tryParse(input);
-
-    setState(() {
-      if (input == 'avada kedavra' || input == 'авада кедавра') {
-        counter = 0;
-        message = '🪄 Лічильник скинуто!';
-      } else if (value != null) {
-        counter += value;
-
-        if (value < 0) {
-          message = '➖ Віднято ${value.abs()}';
-        } else {
-          message = '➕ Додано $value';
-        }
-      } else {
-        message = '❗ Введіть число або "Avada Kedavra"';
-      }
-      controller.clear();
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Лаб 1 Інтерактивний лічильник')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$counter',
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => updateCounter(),
-              decoration: const InputDecoration(
-                labelText: 'Число або чарівне слово',
-                border: OutlineInputBorder(),
+      home: const LoginScreen(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/home':
+            return MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                username: settings.arguments as String,
               ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: updateCounter,
-              child: const Text('Підтвердити'),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.indigoAccent),
-            ),
-          ],
-        ),
-      ),
+            );
+          case '/profile':
+            return MaterialPageRoute(
+              builder: (context) => ProfileScreen(
+                username: settings.arguments as String,
+              ),
+            );
+          case '/register':
+            return MaterialPageRoute(
+              builder: (context) => const RegisterScreen(),
+            );
+          case '/login':
+            return MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            );
+          default:
+            return null;
+        }
+      },
     );
   }
 }

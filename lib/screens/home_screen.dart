@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/repositories/local_user_repository.dart';
+import 'package:flutter_application_1/screens/debug_users_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  final String username;
+class HomeScreen extends StatefulWidget {
+  final String username; // this is user's email
 
   const HomeScreen({required this.username, super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final _repo = const LocalUserRepository();
+  String _displayName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final user = await _repo.getUser(widget.username);
+    if (!mounted) return;
+    setState(() {
+      _displayName = user?.name ?? widget.username;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +40,15 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.person),
             onPressed: () => Navigator.of(context).pushNamed(
               '/profile',
-              arguments: username,
+              arguments: widget.username,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            onPressed: () => Navigator.of(context).push<void>(
+              MaterialPageRoute<void>(
+                builder: (_) => const DebugUsersScreen(),
+              ),
             ),
           ),
         ],
@@ -29,7 +61,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Ласкаво просимо, $username!',
+                  'Ласкаво просимо, $_displayName!',
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall

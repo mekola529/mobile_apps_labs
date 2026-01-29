@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/repositories/local_user_repository.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:flutter_application_1/widgets/custom_button.dart';
 import 'package:flutter_application_1/widgets/custom_text_field.dart';
 
@@ -10,23 +12,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController(text: 'admin');
-  final _passwordController = TextEditingController(text: 'admin');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   String _errorMessage = '';
 
-  void _login() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+  final _auth = const AuthService(repository: LocalUserRepository());
 
-    if (email == 'admin' && password == 'admin') {
+  void _login() async {
+    final login = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    setState(() => _errorMessage = '');
+
+    final res = await _auth.login(login: login, password: password);
+    if (res.success) {
+      if (!mounted) return;
       Navigator.of(context).pushReplacementNamed(
         '/home',
-        arguments: email,
+        arguments: res.user?.email ?? login,
       );
     } else {
-      setState(() {
-        _errorMessage = 'Невірні облікові дані. Спробуйте: admin/admin';
-      });
+      setState(() => _errorMessage = res.message ?? 'Помилка');
     }
   }
 
@@ -63,14 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 48),
                 CustomTextField(
-                  label: 'Email',
-                  hint: 'admin',
+                  label: 'Email або логін',
+                  hint: '',
                   controller: _emailController,
                   icon: Icons.email,
                 ),
                 CustomTextField(
                   label: 'Пароль',
-                  hint: '••••••••',
+                  hint: '',
                   isPassword: true,
                   controller: _passwordController,
                   icon: Icons.lock,
